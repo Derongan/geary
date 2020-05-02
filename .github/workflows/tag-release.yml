@@ -16,7 +16,6 @@ jobs:
       contains(github.event.pull_request.labels.*.name, 'patch'))
       && github.event.pull_request.merged == true
     steps:
-      - run: echo ${{ toJSON(github.event.pull_request) }}
       - name: Find change type
         id: bump
         uses: zwaldowski/match-label-action@v1
