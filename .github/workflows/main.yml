@@ -32,7 +32,7 @@ jobs:
         with:
           rev: ${{ steps.set-nms-version.outputs.nms-version }}
       - name: Install nms into m2
-        run: mkdir -p $HOME/.m2/repository && cp -a nms/* $HOME/.m2/repository
+        run: mkdir -p $HOME/.m2/repository && cp -a nms-build/.m2/repository/* $HOME/.m2/repository
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Run tests
