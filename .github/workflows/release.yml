@@ -128,7 +128,7 @@ jobs:
   # Create and tag a release, and add the jars to it
   create-release:
     runs-on: ubuntu-latest
-    needs: [determine-release-version, build-test-publish]
+    needs: [determine-release-version, jar]
     steps:
       - name: Download release version artifact
         uses: actions/download-artifact@v1
