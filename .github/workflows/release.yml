@@ -1,0 +1,57 @@
+name: Tag Release Version
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+jobs:
+  tag-release-version:
+    runs-on: ubuntu-latest
+    if: >-
+      (contains(github.event.pull_request.labels.*.name, 'major') ||
+      contains(github.event.pull_request.labels.*.name, 'minor') ||
+      contains(github.event.pull_request.labels.*.name, 'patch'))
+      && github.event.pull_request.merged == true
+    steps:
+      - name: Find change type
+        id: bump
+        uses: zwaldowski/match-label-action@v1
+        with:
+          allowed: major,minor,patch
+      - uses: zwaldowski/semver-release-action@v2
+        id: next_version
+        with:
+          bump: ${{ steps.bump.outputs.match }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prefix: v
+      - name: Create release version artifact
+        shell: bash
+        run: |
+          echo "${{ steps.next_version.outputs.version }}" > version.txt
+      - name: Upload release version artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: version
+          path: version.txt
+  upload-artifact:
+    runs-on: ubuntu-latest
+    needs: [tag-release-version]
+    steps:
+      - name: Download release version artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: version
+      - shell: bash
+        run: |
+          version=`cat version.txt`
+          echo "$version"
+      - name: Create GitHub Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+          version.txt
