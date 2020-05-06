@@ -8,6 +8,14 @@ on:
       - closed
 
 jobs:
+  dump-context:
+    runs-on: ubuntu-latest
+    needs: [tag-release-version]
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
   tag-release-version:
     runs-on: ubuntu-latest
     if: >-
