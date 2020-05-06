@@ -27,7 +27,7 @@ jobs:
           name: nms
           path: nms-build/.m2/repository/*
   build:
-    runs-on: ubuntu-lates
+    runs-on: ubuntu-latest
     needs: [build-nms]
     steps:
       - uses: actions/checkout@v2
