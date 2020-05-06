@@ -75,12 +75,19 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Download NMS artifact
-        uses: actions/download-artifact@v1
+      - name: Cache NMS
+        id: cache-nms
+        uses: actions/cache@v1
         with:
-          name: nms
+          path: nms-build/.m2/repository/
+          key: ${{ runner.os }}-nms
+      - name: Build NMS
+        if: steps.cache-nms.outputs.cache-hit != 'true'
+        uses: derongan/nmsaction@v1
+        with:
+          rev: 1.15.1
       - name: Install nms into m2
-        run: mkdir -p $HOME/.m2/repository && cp -a nms/* $HOME/.m2/repository
+        run: mkdir -p $HOME/.m2/repository && cp -a nms-build/.m2/repository/* $HOME/.m2/repository
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Run tests
