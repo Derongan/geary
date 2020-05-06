@@ -54,7 +54,7 @@ jobs:
           name: version
       - shell: bash
         run: |
-          version=`cat version.txt`
+          version=`cat version/version.txt`
           echo "$version"
       - name: Create GitHub Release
         uses: marvinpinto/action-automatic-releases@latest
@@ -62,4 +62,4 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            version.txt
+            version/version.txt
